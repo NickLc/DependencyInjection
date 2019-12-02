@@ -1,4 +1,4 @@
 # DependencyInjection
 Game in python with dependency injection
 
-![Diagram]("Class diagram.JPG")
+![Diagram](Class diagram.JPG)
