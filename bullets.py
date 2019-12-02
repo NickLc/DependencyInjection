@@ -9,56 +9,54 @@ ice_address = 'image/bullet-ice.png'
 poison_address = 'image/bullet-posion.png'
 
 class Bullet():
-    def __init__(self, posY, address):
-        self.speed = 4        
+    def __init__(self, address):
+        self.speed = 0  # speed depend from type spaceCraft     
         # ready - no se ve en pantalla
         # fire - se ve
         self.IMG = pygame.image.load(address).convert_alpha()
         self.X = 0
-        self.Y = posY
-        self.Y_change = self.speed
+        self.Y = 0
         self.state = "ready"
 
-    def move(self,screen,posY):
+    def move(self,screen):
         # movimiento de bullet
         if self.Y < 0 :
-            self.Y = posY
+            self.Y = 0
             self.state = "ready"
 
         if self.state is "fire":
             self.show(screen)
-            self.Y -= self.Y_change
+            self.Y += self.speed
     
     def show(self, screen):
-        self.state = "fire"
         screen.blit(self.IMG, (self.X+8, self.Y+5))
 
 class FireBullet(Bullet):
-    def __init__(self, posY, address=fire_address):
-        super().__init__(posY, address)
+    def __init__(self, address=fire_address):
+        super().__init__( address)
 
-    def move(self, screen, posY):
-        return super().move(screen, posY)
+    def move(self, screen):
+        return super().move(screen)
     
     def show(self, screen):
         return super().show(screen)
 
 class IceBullet(Bullet):
-    def __init__(self, posY, address=ice_address):
-        super().__init__(posY, address)
+    def __init__(self, address=ice_address):
+        super().__init__(address)
 
-    def move(self, screen, posY):
-        return super().move(screen, posY)
+    def move(self, screen):
+        return super().move(screen)
     
     def show(self, screen):
         return super().show(screen)
 
 class PoisonBullet(Bullet):
-    def __init__(self, posY, address=poison_address):
-        super().__init__(posY, address)
+    def __init__(self, address=poison_address):
+        super().__init__(address)
 
-    def move(self, screen, posY):
-        return super().move(screen, posY)
+    def move(self, screen):
+        return super().move(screen)
     
     def show(self, screen):
         return super().show(screen)
