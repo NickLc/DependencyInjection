@@ -2,61 +2,9 @@ import pygame
 import random
 import math
 from pygame import mixer
-
-bullet_state = "ready"
-class Player():
-    def __init__(self):
-        self.speed = 3
-        self.IMG = pygame.image.load('image/space-shuttle.png').convert_alpha()
-        self.X = 390
-        self.Y = 480
-        self.X_change = 0
-        self.accel = 0
-        self.ev = False
-
-    def move(self):
-        # movimiento del player
-        if self.ev and self.X_change < 0:
-            self.accel = self.speed/100
-            self.X_change += self.accel  
-
-        if self.ev and self.X_change > 0:
-            self.accel = -self.speed/100
-            self.X_change += self.accel  
-
-        self.X += self.X_change    
-
-        # limites de espacio de la nave
-        if self.X <= 0:
-                self.X = 0
-        elif self.X >= 770:
-                self.X = 770    
-        
-    def show(self, screen):
-        screen.blit(self.IMG, (self.X,self.Y))
-
-class Enemy():
-    def __init__(self):
-        self.speed = 2
-        self.IMG = pygame.image.load('image/space-invaders.png').convert_alpha()
-        self.X = random.randint(0,770)
-        self.Y = random.randint(50,150)
-        self.X_change = self.speed
-        self.Y_change = -20
-    
-    def move(self):
-        self.X += self.X_change    
-        # limites de espacio del enemigo
-
-        if self.X <= 0:
-            self.X_change = self.speed
-            self.Y -= self.Y_change
-        elif self.X >= 770:
-            self.X_change = -self.speed
-            self.Y -= self.Y_change 
-
-    def show(self, screen):
-        screen.blit(self.IMG, (self.X,self.Y))
+from player import Player, Enemy
+from data import Data
+from bullet import FireBullet, IceBullet
 
 class Set_Enemy():
     def __init__(self):
@@ -64,7 +12,6 @@ class Set_Enemy():
         self.enemy = [Enemy() for i in range(self.nro_of_enemies)]
 
     def move(self, screen, bullet, player, data):
-        global bullet_state
         # movimiento del enemigo
         for i in range(self.nro_of_enemies):
             
@@ -77,7 +24,7 @@ class Set_Enemy():
                 explosion_Sound = mixer.Sound('sound/explosion.wav')
                 explosion_Sound.play()
                 bullet.Y = player.Y
-                bullet_state = "ready"
+                bullet.state = "ready"
                 data.update_score()      
                 self.enemy[i].X = random.randint(0,770)
                 self.enemy[i].Y = random.randint(50,150)
@@ -91,51 +38,6 @@ class Set_Enemy():
         else:
             return False
             
-class Bullet():
-    def __init__(self, posY):
-        self.speed = 4        
-        # ready - no se ve en pantalla
-        # fire - se ve
-        self.IMG = pygame.image.load('image/bullet.png').convert_alpha()
-        self.X = 0
-        self.Y = posY
-        self.Y_change = self.speed
-
-    def move(self,screen,posY):
-        global bullet_state
-        # movimiento de bullet
-        if self.Y < 0 :
-            self.Y = posY
-            bullet_state = "ready"
-
-        if bullet_state is "fire":
-            self.show(screen)
-            self.Y -= self.Y_change
-    
-    def show(self, screen):
-        global bullet_state
-        bullet_state = "fire"
-        screen.blit(self.IMG, (self.X+8, self.Y+5))
-    
-class Data():
-    def __init__(self):
-        self.score_val = 0
-        self.font = pygame.font.Font('freesansbold.ttf', 32)
-        self.score_txt = self.font.render("Score :"+str(self.score_val),True,(255,255,255))
-        # Game over
-        self.over_font = pygame.font.Font('freesansbold.ttf',64)
-        self.over_txt = self.over_font.render("GAME OVER",True,(255,255,255))
-
-    def update_score(self):
-        self.score_val += 1
-        self.score_txt = self.font.render("Score :"+str(self.score_val),True,(255,255,255))
-
-    def show_score(self,screen):
-        textX, textY = 10, 10
-        screen.blit(self.score_txt, (textX, textY))
-
-    def show_game_over(self,screen):
-        screen.blit(self.over_txt, (230,200))
 
 class App_Game():
     def __init__(self):
@@ -159,7 +61,9 @@ class App_Game():
         # Player
         self.player = Player()
         # Bullet
-        self.bullet = Bullet(self.player.Y)
+        #self.bullet = FireBullet(self.player.Y)
+        self.bullet = IceBullet(self.player.Y)
+        
         # Enemy
         self.enemies = Set_Enemy()
         # Datos
@@ -167,7 +71,6 @@ class App_Game():
         self.game_over = False
 
     def play(self):
-        global bullet_state
         # Game Loop
         running = True
         while running:
@@ -199,7 +102,7 @@ class App_Game():
                         self.player.ev = False
 
                     if event.key == pygame.K_SPACE:
-                        if bullet_state is "ready":
+                        if self.bullet.state is "ready":
                             self.bullet.X = self.player.X
                             self.bullet.show(self.screen)
                             bullet_Sound = mixer.Sound('sound/laser.wav')
