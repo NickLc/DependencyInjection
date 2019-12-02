@@ -2,29 +2,29 @@ import pygame
 import random
 import math
 from pygame import mixer
-from player import Player, Enemy
-from data import Data
-from bullet import FireBullet, IceBullet
+from spacecrafts import Player, Enemy
+from statistics import Data
+from bullets import FireBullet, IceBullet
 
 class Set_Enemy():
     def __init__(self):
         self.nro_of_enemies = 20
         self.enemy = [Enemy() for i in range(self.nro_of_enemies)]
 
-    def move(self, screen, bullet, player, data):
+    def move(self, screen, player, data):
         # movimiento del enemigo
         for i in range(self.nro_of_enemies):
             
             self.enemy[i].move()
             
             # Colision
-            collition = self.iscollision(self.enemy[i], bullet)
+            collition = self.iscollision(self.enemy[i], player.bullet)
             
             if collition:
                 explosion_Sound = mixer.Sound('sound/explosion.wav')
                 explosion_Sound.play()
-                bullet.Y = player.Y
-                bullet.state = "ready"
+                player.bullet.Y = player.Y
+                player.bullet.state = "ready"
                 data.update_score()      
                 self.enemy[i].X = random.randint(0,770)
                 self.enemy[i].Y = random.randint(50,150)
@@ -58,12 +58,10 @@ class App_Game():
         self.fpsfont = pygame.font.Font('freesansbold.ttf',30)
         self.clock = pygame.time.Clock()
         pygame.display.flip()
+
         # Player
-        self.player = Player()
-        # Bullet
-        #self.bullet = FireBullet(self.player.Y)
-        self.bullet = IceBullet(self.player.Y)
-        
+        self.player = Player(FireBullet(480))
+    
         # Enemy
         self.enemies = Set_Enemy()
         # Datos
@@ -102,9 +100,9 @@ class App_Game():
                         self.player.ev = False
 
                     if event.key == pygame.K_SPACE:
-                        if self.bullet.state is "ready":
-                            self.bullet.X = self.player.X
-                            self.bullet.show(self.screen)
+                        if self.player.bullet.state is "ready":
+                            self.player.bullet.X = self.player.X
+                            self.player.bullet.show(self.screen)
                             bullet_Sound = mixer.Sound('sound/laser.wav')
                             bullet_Sound.play()
 
@@ -116,9 +114,9 @@ class App_Game():
             
             self.game_over = self.__gameOver__()
             # movimiento del enemigo
-            self.enemies.move(self.screen, self.bullet, self.player,self.data)
+            self.enemies.move(self.screen, self.player,self.data)
 
-            self.bullet.move(self.screen, self.player.Y)
+            self.player.bullet.move(self.screen, self.player.Y)
             self.player.show(self.screen)
             self.data.show_score(self.screen)
             pygame.display.update()

@@ -2,16 +2,18 @@ import pygame
 import random
 import math
 from pygame import mixer
+from bullets import IceBullet, FireBullet, PoisonBullet, Bullet
 
 class Player():
-    def __init__(self):
+    def __init__(self, bullet: Bullet):
         self.speed = 3
         self.IMG = pygame.image.load('image/space-shuttle.png').convert_alpha()
         self.X = 390
-        self.Y = 480
+        self.Y = bullet.Y
         self.X_change = 0
         self.accel = 0
         self.ev = False
+        self.bullet = bullet
 
     def move(self):
         # movimiento del player
