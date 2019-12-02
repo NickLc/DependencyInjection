@@ -6,7 +6,7 @@ from pygame import mixer
 
 fire_address = 'image/bullet-fire.png'
 ice_address = 'image/bullet-ice.png'
-poison_address = 'image/bullet-posion.png'
+poison_address = 'image/bullet-poison.png'
 
 class Bullet():
     def __init__(self, address):
