@@ -2,55 +2,65 @@ import pygame
 import random
 import math
 from pygame import mixer
-from spacecrafts import Player, Enemy, IceEnemy
+from spacecrafts import Player, Enemy, IceEnemy, FireEnemy, PoisonEnemy
 from statistics import Data
 from bullets import FireBullet, IceBullet, PoisonBullet
 
 class Set_Enemy():
     def __init__(self):
-        self.nro_of_enemies = 20
-        self.enemy = [IceEnemy(FireBullet()) for i in range(self.nro_of_enemies)]
+        self.nro_of_enemies = 18
+        self.nro_enemies_for_type = int(self.nro_of_enemies/3)
+
+        self.enemyFire = [FireEnemy(FireBullet()) for i in range(self.nro_enemies_for_type)]
+        self.enemyIce = [IceEnemy(IceBullet()) for i in range(self.nro_enemies_for_type)]
+        self.enemyPoison = [PoisonEnemy(PoisonBullet()) for i in range(self.nro_enemies_for_type)]
+        self.enemies = self.enemyFire + self.enemyIce + self.enemyPoison
+
         self.delay_shoot = 0
-        self.enemy_shoot = self.enemy[0]
+        self.enemy_shoot = random.choice(self.enemies)
 
     def action(self, screen, player, data):
-        delay = random.randint(200,300)
+        
+        for enemy in self.enemies:
+            enemy.move()
+            enemy.show(screen)
+            self.collition_kill_enemy(enemy, player, data)
+            self.collition_kill_player(self.enemy_shoot,player,data,screen)
+            
+        delay = random.randint(100,200)
 
         if self.delay_shoot > delay:      # Init bullet
             self.enemy_shoot.shoot(screen)
             self.delay_shoot = 0
+            self.enemy_shoot = random.choice(self.enemies)
 
         self.enemy_shoot.check_Bullet(screen)
 
-        for i in range(self.nro_of_enemies):
-            
-            self.enemy[i].move()
-            self.enemy[i].show(screen)
+    def collition_kill_enemy(self,enemy,player,data):
 
-            # Collition
-            collition_kill_enemy = self.iscollision(self.enemy[i], player.bullet)
-            
-            if collition_kill_enemy:
-                explosion_Sound = mixer.Sound('sound/explosion.wav')
-                explosion_Sound.play()
-                player.bullet.Y = player.Y
-                player.bullet.state = "ready"
-                data.update_score()      
-                self.enemy[i].X = random.randint(0,770)
-                self.enemy[i].Y = random.randint(50,150)
-
-              
-            collition_kill_player = self.iscollision(player, self.enemy_shoot.bullet)
-            if collition_kill_player:
-                # GAME OVER
-                explosion_Sound = mixer.Sound('sound/explosion.wav')
-                explosion_Sound.play()
-                self.delete()
-                data.show_game_over(screen)
+        if self.iscollision(enemy, player.bullet):
+            explosion_Sound = mixer.Sound('sound/explosion.wav')
+            explosion_Sound.play()
+            player.bullet.Y = player.Y
+            player.bullet.state = "ready"
+            data.update_score()      
+            enemy.X = random.randint(0,770)
+            enemy.Y = random.randint(50,150)
+        
+    def collition_kill_player(self,enemy,player,data,screen):
+ 
+        if self.iscollision(player, enemy.bullet):
+            # GAME OVER
+            explosion_Sound = mixer.Sound('sound/explosion.wav')
+            explosion_Sound.play()
+            self.delete()
+            data.show_game_over(screen)
 
     def delete(self):
-        for j in range(self.nro_of_enemies):
-            self.enemy[j].Y = 2000
+        for enemy in self.enemies:
+            enemy.Y = 2000
+        self.enemy_shoot.Y=2000
+
 
     def iscollision(self,objective,bullet):
         distance = math.sqrt( math.pow(bullet.X-objective.X,2) + math.pow(bullet.Y-objective.Y,2) )
@@ -82,7 +92,7 @@ class App_Game():
         # Load Player
         self.player = Player(FireBullet())
         # Load Enemy
-        self.enemies = Set_Enemy()
+        self.setEnemies = Set_Enemy()
         # Load Statistics
         self.data = Data()
 
@@ -91,7 +101,7 @@ class App_Game():
         running = True
         
         while running:
-            self.enemies.delay_shoot +=1
+            self.setEnemies.delay_shoot +=1
             # RGB-Background color
             self.screen.fill((30,80,180))
             # Add background
@@ -131,17 +141,17 @@ class App_Game():
                         self.player.ev = True
 
             self.player.action(self.screen)
-            self.enemies.action(self.screen, self.player,self.data)
+            self.setEnemies.action(self.screen, self.player,self.data)
             
             self.data.show_score(self.screen)
             self.__gameOver__()
             pygame.display.update()
     
     def __gameOver__(self):
-        for i in range(self.enemies.nro_of_enemies):
+        for enemy in self.setEnemies.enemies:
             # GAME OVER
-            if self.enemies.enemy[i].Y > 440:
-                self.enemies.delete()
+            if enemy.Y > 440:
+                self.setEnemies.delete()
                 self.data.show_game_over(self.screen)
                 break
         

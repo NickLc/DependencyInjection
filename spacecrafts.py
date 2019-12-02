@@ -6,6 +6,7 @@ from bullets import IceBullet, FireBullet, PoisonBullet, Bullet
 
 class SpaceCraft():
     def __init__(self, bullet:Bullet, address):
+        
         self.IMG = pygame.image.load(address).convert_alpha()
         self.X = 0
         self.Y = 0
