@@ -29,7 +29,7 @@ class Player(SpaceCraft):
         self.accel = 0
         self.ev = False
         self.bullet = bullet
-        self.bullet.speed = -4     # player bullet goes up
+        
         
     def move(self):
         # movimiento del player
@@ -50,11 +50,12 @@ class Player(SpaceCraft):
                 self.X = 770    
 
     def shoot(self, screen):
+        self.bullet.speed = -4     # player bullet goes up
         # Init in the same position from player
         self.bullet.X = self.X
         self.bullet.Y = self.Y
         # Star bullet   
-        self.bullet.state = "fire"     
+        self.bullet.state = "shoot"     
         self.bullet.show(screen)
         
     def check_Bullet(self, screen):
@@ -74,13 +75,14 @@ ice_address = 'image/space-ice-invaders.png'
 poison_address = 'image/space-poison-invaders.png'
 
 class Enemy(SpaceCraft):
-    def __init__(self, bullet, address):
+    def __init__(self, bullet, address, element):
         super().__init__(bullet, address)
         self.speed = 2
         self.X = random.randint(0,770)
         self.Y = random.randint(50,150)
         self.X_change = self.speed
         self.Y_change = -20
+        self.element = element
         self.bullet = bullet
         self.bullet.speed = 4     # player bullet goes down
 
@@ -100,7 +102,7 @@ class Enemy(SpaceCraft):
         self.bullet.X = self.X
         self.bullet.Y = self.Y
         # Star bullet   
-        self.bullet.state = "fire"     
+        self.bullet.state = "shoot"     
         self.bullet.show(screen)
 
     def check_Bullet(self, screen):   # this funtion allways calls  
@@ -110,8 +112,8 @@ class Enemy(SpaceCraft):
         screen.blit(self.IMG, (self.X,self.Y))
 
 class FireEnemy(Enemy):
-    def __init__(self, bullet, address=fire_address):
-        super().__init__(bullet, address=address)
+    def __init__(self, bullet, address=fire_address, element="fire"):
+        super().__init__(bullet, address=address, element=element)
     
     def move(self):
         return super().move()
@@ -126,8 +128,8 @@ class FireEnemy(Enemy):
         return super().show(screen)
 
 class IceEnemy(Enemy):
-    def __init__(self, bullet, address=ice_address):
-        super().__init__(bullet, address=address)
+    def __init__(self, bullet, address=ice_address, element="ice"):
+        super().__init__(bullet, address=address, element=element)
     
     def move(self):
         return super().move()
@@ -142,8 +144,8 @@ class IceEnemy(Enemy):
         return super().show(screen)
 
 class PoisonEnemy(Enemy):
-    def __init__(self, bullet, address=poison_address):
-        super().__init__(bullet, address=address)
+    def __init__(self, bullet, address=poison_address, element="poison"):
+        super().__init__(bullet, address=address, element=element)
     
     def move(self):
         return super().move()
