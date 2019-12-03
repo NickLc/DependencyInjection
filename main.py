@@ -5,15 +5,19 @@ from pygame import mixer
 from spacecrafts import Player, Enemy, IceEnemy, FireEnemy, PoisonEnemy
 from statistics import Data
 from bullets import FireBullet, IceBullet, PoisonBullet
+import dependency_injector.containers as containers
+import dependency_injector.providers as providers
+from container import Crafts,Powers,Enemies
+
 
 class Set_Enemy():
     def __init__(self):
         self.nro_of_enemies = 18
         self.nro_enemies_for_type = int(self.nro_of_enemies/3)
 
-        self.enemyFire = [FireEnemy(FireBullet()) for i in range(self.nro_enemies_for_type)]
-        self.enemyIce = [IceEnemy(IceBullet()) for i in range(self.nro_enemies_for_type)]
-        self.enemyPoison = [PoisonEnemy(PoisonBullet()) for i in range(self.nro_enemies_for_type)]
+        self.enemyFire = [Enemies.fire() for i in range(self.nro_enemies_for_type)]
+        self.enemyIce = [Enemies.ice() for i in range(self.nro_enemies_for_type)]
+        self.enemyPoison = [Enemies.poison() for i in range(self.nro_enemies_for_type)]
         self.enemies = self.enemyFire + self.enemyIce + self.enemyPoison
 
         self.delay_shoot = 0
@@ -43,12 +47,13 @@ class Set_Enemy():
             explosion_Sound.play()
             player.bullet.Y = player.Y
             player.bullet.state = "ready"
-            data.update_score()      
-            enemy.X = random.randint(0,770)
-            enemy.Y = random.randint(50,150)
+            if  enemy.element == player.bullet.element:
+                data.update_score()      
+                enemy.X = random.randint(0,770)
+                enemy.Y = random.randint(50,150)
         
     def collition_kill_player(self,enemy,player,data,screen):
- 
+
         if self.iscollision(player, enemy.bullet):
             # GAME OVER
             explosion_Sound = mixer.Sound('sound/explosion.wav')
@@ -90,11 +95,15 @@ class App_Game():
         self.clock = pygame.time.Clock()
         pygame.display.flip()
         # Load Player
-        self.player = Player(FireBullet())
+        self.player = Crafts.ice()
+        #self.player = Player(FireBullet())
         # Load Enemy
         self.setEnemies = Set_Enemy()
         # Load Statistics
         self.data = Data()
+        #bullet change
+        self.change = 1  
+
 
     def play(self):
         # Game Loop
@@ -108,7 +117,7 @@ class App_Game():
             self.screen.blit(self.background,(0,0))
             # Add and Show FPS
             self.fpsnumber = self.clock.get_fps()
-            self.fps = self.fpsfont.render(str(self.fpsnumber),True,pygame.Color('white'))
+            self.fps = self.fpsfont.render("fps:"+str(math.ceil(self.fpsnumber)),True,pygame.Color('white'))
             self.screen.blit(self.fps,(50,50))
             self.clock.tick(120)
 
@@ -129,12 +138,24 @@ class App_Game():
                         lastkey = event.key
                         self.player.ev = False
 
-                    if event.key == pygame.K_SPACE:  # Activarion shoot
+                    if event.key == pygame.K_SPACE:  # Activation shoot
                         # Only shoot when state from bullet is ready
-                        if self.player.bullet.state is "ready":
+                        if self.player.bullet.state is "ready":                           
                             self.player.shoot(self.screen)
                             player_shoot_Sound = mixer.Sound('sound/laser.wav')
                             player_shoot_Sound.play()
+
+                    if event.key == pygame.K_z:  
+                        if self.player.bullet.state is "ready": 
+                            if self.change == 1:
+                                self.player.bullet = Powers.ice()
+                                self.change = (self.change+1)%4
+                            elif self.change == 2:
+                                self.player.bullet = Powers.poison()
+                                self.change = (self.change+1)%3
+                            elif self.change == 0:
+                                self.player.bullet = Powers.fire()
+                                self.change = (self.change+1)%3    
 
                 if event.type == pygame.KEYUP:
                     if (event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and event.key == lastkey:                
@@ -142,7 +163,8 @@ class App_Game():
 
             self.player.action(self.screen)
             self.setEnemies.action(self.screen, self.player,self.data)
-            
+            self.modo = self.fpsfont.render('Modo: '+self.player.bullet.__class__.__name__, False, (255, 0, 0))
+            self.screen.blit(self.modo,(220,10))            
             self.data.show_score(self.screen)
             self.__gameOver__()
             pygame.display.update()
