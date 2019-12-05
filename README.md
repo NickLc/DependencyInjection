@@ -7,6 +7,7 @@
 
 ### 2.1. Paquete dependency-injector PyPI
 
+<<<<<<< HEAD
 Para aplicar DI en python usamos la librería [dependency-injector](https://pypi.org/project/dependency-injector/).
 
 La inyección de dependencia, como patrón de diseño de software, tiene varias ventajas que son comunes para cada lenguaje (incluido Python): 
@@ -26,6 +27,8 @@ DI utiliza providers y containers para realizar la inversión de dependencia:
 - __IoC Containers__: Los contenedores son colecciones de proveedores. El propósito principal de los contenedores es agrupar proveedores.
 ![container](readme_Image/container.png)
 
+=======
+>>>>>>> master
 ## 3. ¿Cómo aplicamos al juego Space Invaders?
 
 ### 3.1. Componentes del juego
