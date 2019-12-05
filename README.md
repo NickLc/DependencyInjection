@@ -17,7 +17,7 @@ La inyección de dependencia, como patrón de diseño de software, tiene varias 
 -	 La inyección de dependencia le permite al código cliente la flexibilidad de ser configurable. Solo el comportamiento del cliente es fijo. El cliente puede actuar sobre cualquier cosa que admita la interfaz intrínseca que el cliente espera.
 
 
-![code](readme_Image/code.png)
+![code](readme_Image/code1.png)
 
 DI utiliza providers y containers para realizar la inversión de dependencia:
 
