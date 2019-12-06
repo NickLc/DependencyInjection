@@ -2,6 +2,18 @@
 # Inyección de Dependencias
 
 ## 1. ¿Qué es inyección de dependencias?
+La inyección de dependencias (ID) es una patron de diseño en ingeniería de software para definir las dependencias entre objetos. Básicamente, el proceso de suministrar un recurso que requiere una determinada pieza de código. El __recurso requerido__ se llama dependencia.
+
+Hay varias clases y objetos definidos al escribir código. La mayoría de las veces, estas clases dependen de otras clases para cumplir con su propósito. Estas clases, o componentes, conocen los recursos que necesita y cómo obtenerlos. ID maneja la definición de estos recursos dependientes y proporciona formas de instanciarlos o crearlos externamente. 
+
+Si el objeto A (cliente) depende del objeto B (servicio), el objeto A no debe crear el objeto de dependencia B directamente. En lugar de esto, el objeto A debe proporcionar una forma de inyectar el objeto B. La responsabilidad de la creación del objeto y la inyección de dependencia se delegan en __el código externo__.
+
+## 1.2. ¿Por qué usar la inyección de dependencia en su código?
+
+- Flexibilidad de los componentes configurables: como los componentes están configurados externamente, puede haber varias definiciones para un componente (Control en la estructura de la aplicación).
+- Pruebas más fáciles: es más fácil crear instancias de objetos simulados e integrarse con varias clases.
+- Alta cohesión: código con una complejidad reducida del módulo, mayor reutilización del módulo.
+- Dependencias minimalistas: como las dependencias están claramente definidas, es más fácil eliminar / reducir dependencias innecesarias.
 
 ## 2. Inyección de dependencias en python
 
@@ -68,5 +80,5 @@ Verificar en su entorno de variables la palabra clave para ejecutar python, pyth
 ## 5. Demo 
 Imagenes
 
-Video de la demostración en el siguiente enlace: [demo](url)
+Video de la demostración en el siguiente enlace: [demo](https://www.youtube.com/watch?v=rkGRhB00AjA)
 
