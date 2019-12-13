@@ -1,23 +1,64 @@
 
 # Inyección de Dependencias
 
-## 1. ¿Qué es inyección de dependencias?
+## Creación injector
+
+Para poder reproducir el injector no se necesita instalar librerias, basta con ejecutar el siguiente comando:
+
+```sh
+$ python propio_Injector.py 
+```
+
+## 1. ¿Cómo reproducir el juego?
+
+### 1.1. Instalación
+
+El juego requiere de los siguientes paquetes:
+- dependency-injector
+- pygame
+
+Abrir su shell y realizar las siguientes comandos 
+```sh
+$ pip install dependency-inyector 
+$ pip install pygame
+```
+
+### 1.2. Ejecución
+
+1. Descargar el paquete
+2. Ubicarse en el paquete
+3. Abrir una shell 
+4. Realizar el siguiente comando:
+```sh
+$ python main.py 
+```
+
+Nota: 
+Verificar en su entorno de variables la palabra clave para ejecutar python, python3 o python
+
+## 2. Demo 
+Imagenes
+
+Video de la demostración en el siguiente enlace: [demo](https://www.youtube.com/watch?v=rkGRhB00AjA)
+
+
+## 3. ¿Qué es inyección de dependencias?
 La inyección de dependencias (ID) es una patron de diseño en ingeniería de software para definir las dependencias entre objetos. Básicamente, el proceso de suministrar un recurso que requiere una determinada pieza de código. El __recurso requerido__ se llama dependencia.
 
 Hay varias clases y objetos definidos al escribir código. La mayoría de las veces, estas clases dependen de otras clases para cumplir con su propósito. Estas clases, o componentes, conocen los recursos que necesita y cómo obtenerlos. ID maneja la definición de estos recursos dependientes y proporciona formas de instanciarlos o crearlos externamente. 
 
 Si el objeto A (cliente) depende del objeto B (servicio), el objeto A no debe crear el objeto de dependencia B directamente. En lugar de esto, el objeto A debe proporcionar una forma de inyectar el objeto B. La responsabilidad de la creación del objeto y la inyección de dependencia se delegan en __el código externo__.
 
-## 1.2. ¿Por qué usar la inyección de dependencia en su código?
+## 3.2. ¿Por qué usar la inyección de dependencia en su código?
 
 - Flexibilidad de los componentes configurables: como los componentes están configurados externamente, puede haber varias definiciones para un componente (Control en la estructura de la aplicación).
 - Pruebas más fáciles: es más fácil crear instancias de objetos simulados e integrarse con varias clases.
 - Alta cohesión: código con una complejidad reducida del módulo, mayor reutilización del módulo.
 - Dependencias minimalistas: como las dependencias están claramente definidas, es más fácil eliminar / reducir dependencias innecesarias.
 
-## 2. Inyección de dependencias en python
+## 4. Inyección de dependencias en python
 
-### 2.1. Paquete dependency-injector PyPI
+### 4.1. Paquete dependency-injector PyPI
 
 
 Para aplicar DI en python usamos la librería [dependency-injector](https://pypi.org/project/dependency-injector/).
@@ -39,46 +80,14 @@ DI utiliza providers y containers para realizar la inversión de dependencia:
 - __IoC Containers__: Los contenedores son colecciones de proveedores. El propósito principal de los contenedores es agrupar proveedores.
 ![container](readme_Image/container.png)
 
-## 3. ¿Cómo aplicamos al juego Space Invaders?
+## 5. ¿Cómo aplicamos al juego Space Invaders?
 
-### 3.1. Componentes del juego
+### 5.1. Componentes del juego
 
 ![Diagram](readme_Image/classDiagram.JPG)
 
-### 3.2. Donde realizamos las inyecciones
+### 5.2. Donde realizamos las inyecciones
 La inyección de dependencias la realizamos en dos ocaciones: 
 - Al momento en que se debe declarar el objeto PLAYER, que vendria a ser la nave que representa al jugador. En este caso esta nave puede tener tres modos de combate: fuego,hielo y veneno. Cada uno de estos modos tiene asociada una clase distinta y para suministrar los objetos de dichas clases existe un contenedor (en el archivo containers.py) preparado para proporcionarlos.
 - Al momento de definir a los enemigos. Hay tres clases para cada tipo de enemigo (fuego, hielo, veneno) y sus objetos correspondientes son proveidos por el contenedor previamente mencionado.
-
-## 4. ¿Cómo reproducir el juego?
-
-### 4.1. Instalación
-
-El juego requiere de los siguientes paquetes:
-- dependency-injector
-- pygame
-
-Abrir su shell y realizar las siguientes comandos 
-```sh
-$ pip install dependency-inyector 
-$ pip install pygame
-```
-
-### 4.2. Ejecución
-
-1. Descargar el paquete
-2. Ubicarse en el paquete
-3. Abrir una shell 
-4. Realizar el siguiente comando:
-```sh
-$ python main.py 
-```
-
-Nota: 
-Verificar en su entorno de variables la palabra clave para ejecutar python, python3 o python
-
-## 5. Demo 
-Imagenes
-
-Video de la demostración en el siguiente enlace: [demo](https://www.youtube.com/watch?v=rkGRhB00AjA)
 
